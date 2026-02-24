@@ -26,48 +26,60 @@ export default function Gallery() {
   }, [])
 
   return (
-    <section id="galerie" ref={ref} style={{
-      padding: '6rem 2rem',
-      background: colors.bg,
-      position: 'relative',
-      transition: 'background 0.4s ease',
-    }}>
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0,
-        height: '1px',
-        background: 'linear-gradient(to right, transparent, #3A2FD9, transparent)',
-      }} />
+    <>
+      <style>{`
+        .gallery-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1rem;
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+        .gallery-item-tall { height: 400px; }
+        .gallery-item-normal { height: 280px; }
+        @media (max-width: 640px) {
+          .gallery-grid {
+            grid-template-columns: 1fr;
+          }
+          .gallery-item-tall { height: 250px !important; }
+          .gallery-item-normal { height: 220px !important; }
+        }
+      `}</style>
 
-      <div style={{
-        textAlign: 'center', marginBottom: '4rem',
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
-        transition: 'all 0.8s ease',
+      <section id="galerie" ref={ref} style={{
+        padding: '6rem 1.5rem',
+        background: colors.bg,
+        position: 'relative',
+        transition: 'background 0.4s ease',
       }}>
-        <p style={{ fontFamily: 'Great Vibes, cursive', fontSize: '1.8rem', color: '#1A6DFF', marginBottom: '0.5rem' }}>
-          Nos réalisations
-        </p>
-        <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '700', color: colors.text }}>
-          Notre Univers
-        </h2>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
-          <div style={{ width: '40px', height: '1px', background: 'rgba(26,109,255,0.5)' }} />
-          <span style={{ color: '#1A6DFF' }}>✦</span>
-          <div style={{ width: '40px', height: '1px', background: 'rgba(26,109,255,0.5)' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(to right, transparent, #3A2FD9, transparent)' }} />
+
+        <div style={{
+          textAlign: 'center', marginBottom: '4rem',
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s ease',
+        }}>
+          <p style={{ fontFamily: 'Great Vibes, cursive', fontSize: '1.8rem', color: '#1A6DFF', marginBottom: '0.5rem' }}>
+            Nos réalisations
+          </p>
+          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '700', color: colors.text }}>
+            Notre Univers
+          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+            <div style={{ width: '40px', height: '1px', background: 'rgba(26,109,255,0.5)' }} />
+            <span style={{ color: '#1A6DFF' }}>✦</span>
+            <div style={{ width: '40px', height: '1px', background: 'rgba(26,109,255,0.5)' }} />
+          </div>
         </div>
-      </div>
 
-      <div style={{
-        maxWidth: '1100px', margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '1rem',
-      }}>
-        {photos.map((photo, i) => (
-          <GalleryItem key={i} photo={photo} index={i} visible={visible} />
-        ))}
-      </div>
-    </section>
+        <div className="gallery-grid">
+          {photos.map((photo, i) => (
+            <GalleryItem key={i} photo={photo} index={i} visible={visible} />
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
 
@@ -78,9 +90,9 @@ function GalleryItem({ photo, index, visible }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={index === 0 || index === 3 ? 'gallery-item-tall' : 'gallery-item-normal'}
       style={{
         position: 'relative', overflow: 'hidden', borderRadius: '4px',
-        height: index === 0 || index === 3 ? '400px' : '280px',
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(40px)',
         transition: `all 0.7s ease ${index * 0.1}s`,
