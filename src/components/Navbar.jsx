@@ -1,11 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useTheme } from './ThemeProvider'
+import { useLanguage } from './LanguageProvider'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { dark, toggle, colors } = useTheme()
+  const { lang, toggle: toggleLang, t } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -52,6 +54,16 @@ export default function Navbar() {
         }
         .mobile-menu {
           display: none;
+        }
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         @media (max-width: 768px) {
           .nav-links-desktop {
@@ -120,6 +132,22 @@ export default function Navbar() {
 
         {/* ACTIONS DESKTOP */}
         <div className="nav-actions-desktop">
+          {/* TOGGLE LANGUE */}
+          <button onClick={toggleLang} style={{
+            background: 'transparent',
+            border: '1px solid rgba(26,109,255,0.4)',
+            borderRadius: '50px', padding: '0.4rem 0.9rem',
+            cursor: 'pointer', color: colors.text,
+            fontSize: '0.85rem', fontWeight: '600',
+            letterSpacing: '0.05em', transition: 'all 0.3s',
+            display: 'flex', alignItems: 'center', gap: '0.4rem',
+          }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = '#1A6DFF'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(26,109,255,0.4)'}
+          >
+            {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
+          </button>
+
           <button onClick={toggle} style={{
             background: 'transparent',
             border: '1px solid rgba(26,109,255,0.4)',
@@ -201,32 +229,28 @@ export default function Navbar() {
           ))}
 
           {/* ACTIONS MOBILE */}
-          <div style={{
-            display: 'flex', gap: '1rem', marginTop: '1rem',
-            opacity: 0,
-            animation: 'fadeUp 0.4s ease 0.4s forwards',
-          }}>
-            <button onClick={() => { toggle(); closeMenu() }} style={{
-              background: 'transparent',
-              border: '1px solid rgba(26,109,255,0.4)',
-              borderRadius: '50px',
-              padding: '0.6rem 1.2rem',
-              cursor: 'pointer',
-              color: colors.text,
-              fontSize: '1rem',
+          <div style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem', opacity: 0, animation: 'fadeUp 0.4s ease 0.4s forwards' }}>
+            <button onClick={() => { toggleLang(); }} style={{
+              background: 'transparent', border: '1px solid rgba(26,109,255,0.4)',
+              borderRadius: '50px', padding: '0.6rem 1rem',
+              cursor: 'pointer', color: colors.text, fontSize: '0.85rem', fontWeight: '600',
+            }}>
+              {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
+            </button>
+            <button onClick={() => { toggle(); }} style={{
+              background: 'transparent', border: '1px solid rgba(26,109,255,0.4)',
+              borderRadius: '50px', padding: '0.6rem 1rem',
+              cursor: 'pointer', color: colors.text, fontSize: '1rem',
             }}>
               {dark ? '☀️' : '🌙'}
             </button>
-
             <a href="#reservation" onClick={closeMenu} style={{
               background: 'linear-gradient(135deg, #1A6DFF, #3A2FD9)',
-              color: '#fff', padding: '0.7rem 2rem',
-              borderRadius: '2px', textDecoration: 'none',
-              fontSize: '0.85rem', letterSpacing: '0.1em', textTransform: 'uppercase',
-              boxShadow: '0 0 20px rgba(26,109,255,0.4)',
-              flex: 1, textAlign: 'center',
+              color: '#fff', padding: '0.7rem 1.5rem', borderRadius: '2px',
+              textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '0.1em',
+              textTransform: 'uppercase', flex: 1, textAlign: 'center',
             }}>
-              Réserver
+              {t?.nav?.reserver || 'Réserver'}
             </a>
           </div>
         </div>

@@ -1,85 +1,23 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from './ThemeProvider'
+import { useLanguage } from './LanguageProvider'
 
-const services = [
-  {
-    icon: '✂️', titre: 'Coiffure',
-    description: 'Coupes tendance, colorations, balayages et coiffages pour sublimer votre chevelure.',
-    image: 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Coupe Femme', prix: '15 000 FCFA', duree: '45 min' },
-      { nom: 'Coupe Homme', prix: '8 000 FCFA', duree: '30 min' },
-      { nom: 'Coloration complète', prix: '35 000 FCFA', duree: '2h' },
-      { nom: 'Balayage / Mèches', prix: '40 000 FCFA', duree: '2h30' },
-      { nom: 'Brushing', prix: '10 000 FCFA', duree: '30 min' },
-    ],
-    longDescription: 'Notre équipe de coiffeurs experts maîtrise les dernières tendances pour vous offrir une coupe parfaitement adaptée à votre morphologie et votre style de vie.',
-  },
-  {
-    icon: '💆', titre: 'Soins Capillaires',
-    description: 'Kératine, masques nutritifs et traitements restructurants pour des cheveux en pleine santé.',
-    image: 'https://images.pexels.com/photos/3738355/pexels-photo-3738355.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Lissage brésilien', prix: '60 000 FCFA', duree: '3h' },
-      { nom: 'Masque nutritif', prix: '15 000 FCFA', duree: '45 min' },
-      { nom: 'Traitement kératine', prix: '50 000 FCFA', duree: '2h30' },
-      { nom: 'Soin hydratant', prix: '12 000 FCFA', duree: '30 min' },
-    ],
-    longDescription: 'Nos soins capillaires utilisent des produits professionnels de haute qualité pour restaurer, nourrir et embellir votre chevelure en profondeur.',
-  },
-  {
-    icon: '🌿', titre: 'Soins du Visage',
-    description: 'Nettoyage en profondeur, hydratation intense et soins anti-âge pour une peau rayonnante.',
-    image: 'https://images.pexels.com/photos/3997991/pexels-photo-3997991.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Nettoyage peau', prix: '20 000 FCFA', duree: '1h' },
-      { nom: 'Soin hydratant', prix: '25 000 FCFA', duree: '1h' },
-      { nom: 'Soin anti-âge', prix: '35 000 FCFA', duree: '1h30' },
-      { nom: 'Peeling doux', prix: '30 000 FCFA', duree: '1h' },
-    ],
-    longDescription: 'Nos esthéticiennes qualifiées analysent votre type de peau pour vous proposer le soin le plus adapté, avec des produits naturels et efficaces.',
-  },
-  {
-    icon: '🕊️', titre: 'Massages',
-    description: 'Massages relaxants, modelages corps et soins aux pierres chaudes pour un bien-être total.',
-    image: 'https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Massage relaxant', prix: '25 000 FCFA', duree: '1h' },
-      { nom: 'Modelage corps', prix: '35 000 FCFA', duree: '1h30' },
-      { nom: 'Pierres chaudes', prix: '40 000 FCFA', duree: '1h30' },
-      { nom: 'Massage dos', prix: '15 000 FCFA', duree: '30 min' },
-    ],
-    longDescription: 'Laissez-vous transporter dans un état de relaxation profonde grâce à nos massages thérapeutiques pratiqués par des thérapeutes certifiés.',
-  },
-  {
-    icon: '💅', titre: 'Beauté & Épilation',
-    description: 'Mise en beauté des sourcils, onglerie et épilation pour une silhouette parfaite.',
-    image: 'https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Manucure complète', prix: '12 000 FCFA', duree: '45 min' },
-      { nom: 'Pose gel/résine', prix: '25 000 FCFA', duree: '1h30' },
-      { nom: 'Épilation sourcils', prix: '5 000 FCFA', duree: '15 min' },
-      { nom: 'Épilation jambes', prix: '20 000 FCFA', duree: '45 min' },
-    ],
-    longDescription: 'Du nail art aux épilations les plus précises, notre équipe beauté prend soin de chaque détail pour que vous soyez parfaite de la tête aux pieds.',
-  },
-  {
-    icon: '✨', titre: 'Forfaits Premium',
-    description: 'Des packages exclusifs combinant plusieurs soins pour une expérience complète et luxueuse.',
-    image: 'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&w=800',
-    details: [
-      { nom: 'Forfait Beauté', prix: '55 000 FCFA', duree: '3h' },
-      { nom: 'Forfait Détente', prix: '65 000 FCFA', duree: '3h30' },
-      { nom: 'Forfait Mariée', prix: '120 000 FCFA', duree: '6h' },
-      { nom: 'Forfait VIP', prix: '150 000 FCFA', duree: 'Journée' },
-    ],
-    longDescription: 'Nos forfaits premium sont conçus pour vous offrir une journée de transformation totale. Idéal pour les occasions spéciales ou simplement pour se faire plaisir.',
-  },
+const serviceImages = [
+  'https://images.pexels.com/photos/3992876/pexels-photo-3992876.jpeg?auto=compress&w=800',
+  'https://images.pexels.com/photos/3998421/pexels-photo-3998421.jpeg?auto=compress&w=800',
+  'https://images.pexels.com/photos/3992874/pexels-photo-3992874.jpeg?auto=compress&w=800',
+  'https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=800',
+  'https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg?auto=compress&w=800',
+  'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&w=800',
 ]
+
+const serviceIcons = ['✂️', '💆', '🌿', '🕊️', '💅', '✨']
 
 function Modal({ service, onClose }) {
   const { colors } = useTheme()
+  const { t } = useLanguage()
+
   return (
     <div onClick={onClose} style={{
       position: 'fixed', inset: 0, zIndex: 9999,
@@ -119,12 +57,13 @@ function Modal({ service, onClose }) {
             borderRadius: '50%', cursor: 'pointer', fontSize: '1rem',
           }}>✕</button>
         </div>
+
         <div style={{ padding: '1.5rem' }}>
           <p style={{ color: colors.textSub, lineHeight: '1.8', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
             {service.longDescription}
           </p>
           <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem', marginBottom: '1rem', color: '#1A6DFF' }}>
-            Nos tarifs
+            {t.services.nos_tarifs}
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', marginBottom: '1.5rem' }}>
             {service.details.map((item, i) => (
@@ -150,7 +89,7 @@ function Modal({ service, onClose }) {
             borderRadius: '4px', fontSize: '0.85rem',
             letterSpacing: '0.15em', textTransform: 'uppercase',
           }}>
-            Réserver ce service
+            {t.services.reserver_service}
           </a>
         </div>
       </div>
@@ -163,6 +102,7 @@ function ServiceCard({ service, index }) {
   const [hovered, setHovered] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const { colors, dark } = useTheme()
+  const { t } = useLanguage()
   const ref = useRef()
 
   useEffect(() => {
@@ -212,7 +152,7 @@ function ServiceCard({ service, index }) {
             fontSize: '0.78rem', letterSpacing: '0.1em', color: '#1A6DFF',
             textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
-            Voir les tarifs
+            {t.services.voir_tarifs}
             <span style={{ transition: 'transform 0.3s', transform: hovered ? 'translateX(5px)' : 'translateX(0)', display: 'inline-block' }}>→</span>
           </span>
         </div>
@@ -224,6 +164,7 @@ function ServiceCard({ service, index }) {
 export default function Services() {
   const [titleVisible, setTitleVisible] = useState(false)
   const { colors } = useTheme()
+  const { t } = useLanguage()
   const titleRef = useRef()
 
   useEffect(() => {
@@ -234,6 +175,13 @@ export default function Services() {
     if (titleRef.current) observer.observe(titleRef.current)
     return () => observer.disconnect()
   }, [])
+
+  // Combine les données de traduction avec les images et icônes
+  const servicesData = t.services.liste.map((s, i) => ({
+    ...s,
+    image: serviceImages[i],
+    icon: serviceIcons[i],
+  }))
 
   return (
     <>
@@ -246,9 +194,7 @@ export default function Services() {
           margin: 0 auto;
         }
         @media (max-width: 640px) {
-          .services-grid {
-            grid-template-columns: 1fr;
-          }
+          .services-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
@@ -267,10 +213,10 @@ export default function Services() {
           transition: 'all 0.8s ease',
         }}>
           <p style={{ fontFamily: 'Great Vibes, cursive', fontSize: '1.8rem', color: '#1A6DFF', marginBottom: '0.5rem' }}>
-            Ce que nous offrons
+            {t.services.tag}
           </p>
           <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '700', color: colors.text }}>
-            Nos Prestations
+            {t.services.titre}
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
             <div style={{ width: '40px', height: '1px', background: 'rgba(26,109,255,0.5)' }} />
@@ -280,8 +226,8 @@ export default function Services() {
         </div>
 
         <div className="services-grid">
-          {services.map((service, index) => (
-            <ServiceCard key={service.titre} service={service} index={index} />
+          {servicesData.map((service, index) => (
+            <ServiceCard key={index} service={service} index={index} />
           ))}
         </div>
       </section>

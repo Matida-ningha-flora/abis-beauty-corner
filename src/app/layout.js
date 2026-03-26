@@ -1,5 +1,6 @@
 import './globals.css'
 import ThemeProvider from '@/components/ThemeProvider'
+import LanguageProvider from '@/components/LanguageProvider'
 
 export const metadata = {
   title: "ABI'S BEAUTY CORNER",
@@ -10,9 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <body>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   )
