@@ -5,6 +5,9 @@ import LanguageProvider from '@/components/LanguageProvider'
 export const metadata = {
   title: "ABI'S BEAUTY CORNER",
   description: "Salon de coiffure, soins de beauté, massages et bien-être",
+  icons: {
+    icon: "/logo.png",
+  },
 }
 
 export default function RootLayout({ children }) {
