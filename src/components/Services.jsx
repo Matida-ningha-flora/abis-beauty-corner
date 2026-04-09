@@ -63,7 +63,7 @@ function Modal({ service, onClose }) {
             {service.longDescription}
           </p>
           <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.5rem', marginBottom: '1rem', color: '#1A6DFF' }}>
-            {t.services.nos_tarifs}
+            {t.services.nos_prestations || "Nos prestations"}
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', marginBottom: '1.5rem' }}>
             {service.details.map((item, i) => (
@@ -76,9 +76,7 @@ function Modal({ service, onClose }) {
                   <p style={{ fontWeight: '500', fontSize: '0.85rem', color: colors.text }}>{item.nom}</p>
                   <p style={{ color: colors.textSub, fontSize: '0.72rem', marginTop: '0.2rem' }}>⏱ {item.duree}</p>
                 </div>
-                <span style={{ color: '#1A6DFF', fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', fontWeight: '600' }}>
-                  {item.prix}
-                </span>
+                {/* Prix supprimé */}
               </div>
             ))}
           </div>
@@ -152,7 +150,7 @@ function ServiceCard({ service, index }) {
             fontSize: '0.78rem', letterSpacing: '0.1em', color: '#1A6DFF',
             textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
-            {t.services.voir_tarifs}
+            {t.services.en_savoir_plus || "En savoir plus"}
             <span style={{ transition: 'transform 0.3s', transform: hovered ? 'translateX(5px)' : 'translateX(0)', display: 'inline-block' }}>→</span>
           </span>
         </div>
