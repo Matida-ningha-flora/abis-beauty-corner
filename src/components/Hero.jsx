@@ -29,7 +29,7 @@ export default function Hero() {
       }}>
         {/* IMAGE AFRICAINE HERO */}
         <img
-          src="https://images.pexels.com/photos/3992876/pexels-photo-3992876.jpeg?auto=compress&cs=tinysrgb&w=1920"
+          src="https://images.pexels.com/photos/3992876/pexels-photo-3992876.jpeg?auto=compress&cs=tinysrgb&w=1200"
           alt="salon"
           style={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',
