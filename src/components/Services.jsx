@@ -2,17 +2,36 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from './ThemeProvider'
 import { useLanguage } from './LanguageProvider'
+import { Scissors, Sparkles, Leaf, Wind, Hand, Crown } from 'lucide-react'
 
-const serviceImages = [
-  'https://images.pexels.com/photos/3992876/pexels-photo-3992876.jpeg?auto=compress&w=400',
-  'https://images.pexels.com/photos/3998421/pexels-photo-3998421.jpeg?auto=compress&w=400',
-  'https://images.pexels.com/photos/3992874/pexels-photo-3992874.jpeg?auto=compress&w=400',
-  'https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=400',
-  'https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg?auto=compress&w=400',
-  'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&w=400',
+const serviceIcons = [
+  <Scissors size={28} color="#1A6DFF" strokeWidth={1.5} />,  // Coiffure
+  <Sparkles size={28} color="#1A6DFF" strokeWidth={1.5} />,  // Soin capillaire
+  <Leaf size={28} color="#1A6DFF" strokeWidth={1.5} />,      // Soin visage
+  <Wind size={28} color="#1A6DFF" strokeWidth={1.5} />,      // Massage
+  <Hand size={28} color="#1A6DFF" strokeWidth={1.5} />,      // Épilation
+  <Crown size={28} color="#1A6DFF" strokeWidth={1.5} />,     // Forfait premium
 ]
 
-const serviceIcons = ['✂️', '💆', '🌿', '🕊️', '💅', '✨']
+// const serviceImages = [
+//   'https://images.pexels.com/photos/3992876/pexels-photo-3992876.jpeg?auto=compress&w=400',
+//   'https://images.pexels.com/photos/3998421/pexels-photo-3998421.jpeg?auto=compress&w=400',
+//   'https://images.pexels.com/photos/3992874/pexels-photo-3992874.jpeg?auto=compress&w=400',
+//   'https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=400',
+//   'https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg?auto=compress&w=400',
+//   'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&w=400',
+// ]
+
+const serviceImages = [
+  '/coiffure 1.jpg',
+  '/soin-capillaire 2.jpg',
+  '/soin de visage.webp',
+  '/massage.jpg',
+  '/epilation.png',
+  '/forfait-premium.jpg',
+]
+
+//const serviceIcons = ['✂️', '💆', '🌿', '🕊️', '💅', '✨']
 
 function Modal({ service, onClose }) {
   const { colors } = useTheme()
@@ -44,7 +63,18 @@ function Modal({ service, onClose }) {
             background: 'linear-gradient(to top, rgba(13,27,42,1) 0%, transparent 60%)',
           }}>
             <div>
-              <span style={{ fontSize: '1.5rem' }}>{service.icon}</span>
+              {/* <span style={{ fontSize: '1.5rem' }}>{service.icon}</span> */}
+              <div style={{
+                position: 'absolute', bottom: '1rem', left: '1rem',
+                background: 'rgba(0,0,0,0.5)',
+                borderRadius: '50%',
+                padding: '8px',
+                display: 'flex',
+                backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(26,109,255,0.4)'
+              }}>
+                {service.icon}
+              </div>
               <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: '700', color: '#fff' }}>
                 {service.titre}
               </h2>
