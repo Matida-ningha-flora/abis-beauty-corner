@@ -1,6 +1,5 @@
 'use client'
 // app/galerie/[categorie]/GalerieClient.jsx
-// Fichier CLIENT — toute la logique interactive
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 
@@ -16,9 +15,11 @@ export default function GalerieClient({ gallery, categorie }) {
 
   const handleKey = useCallback((e) => {
     if (selected === null || !gallery) return
-    if (e.key === 'ArrowRight') setSelected(i => Math.min(i + 1, gallery.photos.length - 1))
+    if (e.key === 'Escape') { setSelected(null); return }
+    // Ne pas naviguer avec les flèches si c'est une vidéo (l'user contrôle la vidéo)
+    if (gallery.medias[selected]?.type === 'video') return
+    if (e.key === 'ArrowRight') setSelected(i => Math.min(i + 1, gallery.medias.length - 1))
     if (e.key === 'ArrowLeft') setSelected(i => Math.max(i - 1, 0))
-    if (e.key === 'Escape') setSelected(null)
   }, [selected, gallery])
 
   useEffect(() => {
@@ -28,7 +29,10 @@ export default function GalerieClient({ gallery, categorie }) {
 
   if (!gallery) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0d1b2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{
+        minHeight: '100vh', background: '#0d1b2a',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
         <div style={{ textAlign: 'center', color: '#fff' }}>
           <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem', marginBottom: '1rem' }}>
             Catégorie introuvable
@@ -42,50 +46,88 @@ export default function GalerieClient({ gallery, categorie }) {
   }
 
   const titreFormate = categorie.replace(/-/g, ' ')
+  const nbImages = gallery.medias.filter(m => m.type === 'image').length
+  const nbVideos = gallery.medias.filter(m => m.type === 'video').length
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Great+Vibes&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .photo-grid {
+
+        .media-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
           gap: 1rem;
         }
-        .photo-item {
-          height: 240px; border-radius: 4px;
-          overflow: hidden; cursor: pointer; position: relative;
+        .media-item {
+          height: 240px;
+          border-radius: 4px;
+          overflow: hidden;
+          cursor: pointer;
+          position: relative;
         }
-        .photo-item img {
+        .media-item img,
+        .media-item video {
           width: 100%; height: 100%; object-fit: cover;
           transition: transform 0.5s ease, filter 0.4s ease;
           filter: brightness(0.85);
         }
-        .photo-item:hover img { transform: scale(1.06); filter: brightness(0.6); }
-        .photo-item-overlay {
+        .media-item:hover img,
+        .media-item:hover video {
+          transform: scale(1.04);
+          filter: brightness(0.55);
+        }
+        .media-overlay {
           position: absolute; inset: 0;
           display: flex; align-items: center; justify-content: center;
           opacity: 0; transition: opacity 0.3s ease;
-          border: 1px solid rgba(26,109,255,0.5); border-radius: 4px;
+          border: 1px solid rgba(26,109,255,0.5);
+          border-radius: 4px;
         }
-        .photo-item:hover .photo-item-overlay { opacity: 1; }
-        .photo-item-overlay span {
+        .media-item:hover .media-overlay { opacity: 1; }
+        .media-overlay span {
           color: #fff; font-size: 0.75rem;
           letter-spacing: 0.15em; text-transform: uppercase;
         }
+
+        /* Badge vidéo toujours visible */
+        .video-badge {
+          position: absolute; top: 0.7rem; right: 0.7rem;
+          background: rgba(26,109,255,0.9);
+          color: #fff; font-size: 0.65rem;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          padding: 0.2rem 0.5rem; border-radius: 2px;
+        }
+
+        /* Bouton play centré sur la thumbnail vidéo */
+        .play-btn {
+          position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          pointer-events: none;
+          transition: opacity 0.3s;
+        }
+        .play-circle {
+          width: 52px; height: 52px; border-radius: 50%;
+          background: rgba(26,109,255,0.85);
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 20px rgba(26,109,255,0.4);
+          transition: transform 0.3s;
+        }
+        .media-item:hover .play-circle { transform: scale(1.12); }
+
         @media (max-width: 640px) {
-          .photo-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-          .photo-item { height: 160px; }
+          .media-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+          .media-item { height: 160px; }
         }
         @media (max-width: 380px) {
-          .photo-grid { grid-template-columns: 1fr; }
+          .media-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
       <div style={{ minHeight: '100vh', background: '#0d1b2a', fontFamily: 'Cormorant Garamond, serif' }}>
 
-        {/* ── Header avec image cover ── */}
+        {/* ── Header ── */}
         <div style={{ position: 'relative', height: '300px', overflow: 'hidden' }}>
           <img
             src={gallery.cover}
@@ -125,8 +167,11 @@ export default function GalerieClient({ gallery, categorie }) {
               }}>
                 {titreFormate}
               </h1>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginTop: '0.6rem', letterSpacing: '0.08em' }}>
-                {gallery.photos.length} photo{gallery.photos.length > 1 ? 's' : ''}
+              {/* Compteur photos + vidéos */}
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', marginTop: '0.6rem', letterSpacing: '0.06em' }}>
+                {nbImages > 0 && `${nbImages} photo${nbImages > 1 ? 's' : ''}`}
+                {nbImages > 0 && nbVideos > 0 && ' · '}
+                {nbVideos > 0 && `${nbVideos} vidéo${nbVideos > 1 ? 's' : ''}`}
               </p>
             </div>
           </div>
@@ -136,18 +181,18 @@ export default function GalerieClient({ gallery, categorie }) {
           }} />
         </div>
 
-        {/* ── Grille de photos ── */}
+        {/* ── Grille médias ── */}
         <div style={{ padding: '3rem 2rem', maxWidth: '1100px', margin: '0 auto' }}>
-          {gallery.photos.length === 0 ? (
+          {gallery.medias.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem', color: 'rgba(255,255,255,0.4)' }}>
-              <p style={{ fontSize: '1.2rem' }}>Photos bientôt disponibles</p>
+              <p style={{ fontSize: '1.2rem' }}>Contenu bientôt disponible</p>
             </div>
           ) : (
-            <div className="photo-grid">
-              {gallery.photos.map((url, i) => (
+            <div className="media-grid">
+              {gallery.medias.map((media, i) => (
                 <div
                   key={i}
-                  className="photo-item"
+                  className="media-item"
                   onClick={() => setSelected(i)}
                   style={{
                     opacity: loaded ? 1 : 0,
@@ -155,8 +200,31 @@ export default function GalerieClient({ gallery, categorie }) {
                     transition: `all 0.6s ease ${i * 0.07}s`,
                   }}
                 >
-                  <img src={url} alt={`${titreFormate} ${i + 1}`} loading="lazy" />
-                  <div className="photo-item-overlay"><span>Agrandir</span></div>
+                  {media.type === 'image' ? (
+                    <img src={media.src} alt={`${titreFormate} ${i + 1}`} loading="lazy" />
+                  ) : (
+                    <>
+                      <video
+                        src={media.src}
+                        poster={media.poster}
+                        muted
+                        preload="none"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      {/* Bouton play */}
+                      <div className="play-btn">
+                        <div className="play-circle">
+                          <span style={{ color: '#fff', fontSize: '1.1rem', marginLeft: '3px' }}>▶</span>
+                        </div>
+                      </div>
+                      {/* Badge VIDÉO */}
+                      <span className="video-badge">Vidéo</span>
+                    </>
+                  )}
+
+                  <div className="media-overlay">
+                    <span>{media.type === 'video' ? '▶ Voir la vidéo' : 'Agrandir'}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -191,6 +259,7 @@ export default function GalerieClient({ gallery, categorie }) {
             padding: '1rem', backdropFilter: 'blur(8px)',
           }}
         >
+          {/* Fermer */}
           <button
             onClick={() => setSelected(null)}
             style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', ...closeBtnStyle }}
@@ -198,6 +267,7 @@ export default function GalerieClient({ gallery, categorie }) {
             ✕
           </button>
 
+          {/* Précédent */}
           {selected > 0 && (
             <button
               onClick={e => { e.stopPropagation(); setSelected(i => i - 1) }}
@@ -207,18 +277,36 @@ export default function GalerieClient({ gallery, categorie }) {
             </button>
           )}
 
-          <img
-            src={gallery.photos[selected]}
-            alt={`${titreFormate} ${selected + 1}`}
-            onClick={e => e.stopPropagation()}
-            style={{
-              maxWidth: '90vw', maxHeight: '88vh',
-              objectFit: 'contain', borderRadius: '4px',
-              boxShadow: '0 30px 80px rgba(0,0,0,0.8)',
-            }}
-          />
+          {/* Média principal */}
+          {gallery.medias[selected].type === 'image' ? (
+            <img
+              src={gallery.medias[selected].src}
+              alt={`${titreFormate} ${selected + 1}`}
+              onClick={e => e.stopPropagation()}
+              style={{
+                maxWidth: '90vw', maxHeight: '88vh',
+                objectFit: 'contain', borderRadius: '4px',
+                boxShadow: '0 30px 80px rgba(0,0,0,0.8)',
+              }}
+            />
+          ) : (
+            <video
+              key={selected} // re-mount à chaque changement de vidéo
+              src={gallery.medias[selected].src}
+              poster={gallery.medias[selected].poster}
+              controls
+              autoPlay
+              onClick={e => e.stopPropagation()}
+              style={{
+                maxWidth: '90vw', maxHeight: '88vh',
+                borderRadius: '4px', outline: 'none',
+                boxShadow: '0 30px 80px rgba(0,0,0,0.8)',
+              }}
+            />
+          )}
 
-          {selected < gallery.photos.length - 1 && (
+          {/* Suivant */}
+          {selected < gallery.medias.length - 1 && (
             <button
               onClick={e => { e.stopPropagation(); setSelected(i => i + 1) }}
               style={{ position: 'absolute', right: '1rem', ...navBtnStyle }}
@@ -227,11 +315,22 @@ export default function GalerieClient({ gallery, categorie }) {
             </button>
           )}
 
+          {/* Compteur + type */}
           <p style={{
             position: 'absolute', bottom: '1.5rem',
             color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', letterSpacing: '0.1em',
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
-            {selected + 1} / {gallery.photos.length}
+            {gallery.medias[selected].type === 'video' && (
+              <span style={{
+                background: 'rgba(26,109,255,0.8)', color: '#fff',
+                fontSize: '0.65rem', padding: '0.15rem 0.4rem',
+                borderRadius: '2px', letterSpacing: '0.08em',
+              }}>
+                VIDÉO
+              </span>
+            )}
+            {selected + 1} / {gallery.medias.length}
           </p>
         </div>
       )}
