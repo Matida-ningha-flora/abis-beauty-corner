@@ -31,6 +31,7 @@ export const galleries = [
       { type: 'image', src: '/gallery/tresses/2.jpg' },
       { type: 'video', src: '/gallery/tresses/video1.mp4', poster: '/gallery/tresses/video1-cover.jpg' },
       { type: 'image', src: '/gallery/tresses/3.jpeg' },
+      { type: 'video', src: '/gallery/tresses/4.mp4', poster: '/gallery/tresses/4.mp4-cover.jpg' },
       { type: 'image', src: '/gallery/tresses/4.jpg' },
     ],
   },

@@ -27,7 +27,7 @@ export default function Booking() {
   const submit = (e) => {
     e.preventDefault()
     const message = `Bonjour Abis Beauty Corner ! 👋\n\nJe souhaite réserver un rendez-vous :\n\n👤 Nom : ${form.nom}\n📞 Téléphone : ${form.telephone}\n💅 Service : ${form.service}\n📅 Date : ${form.date}\n⏰ Heure : ${form.heure}\n${form.message ? `💬 Message : ${form.message}` : ''}\n\nMerci !`
-    window.open(`https://wa.me/237683428378?text=${encodeURIComponent(message)}`, '_blank')
+    window.open(`https://wa.me/237697487716?text=${encodeURIComponent(message)}`, '_blank')
     setSent(true)
   }
 

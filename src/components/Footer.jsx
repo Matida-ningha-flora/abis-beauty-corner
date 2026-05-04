@@ -37,8 +37,9 @@ export default function Footer() {
           <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.3rem', marginBottom: '1.5rem', color: colors.text }}>{t.footer.contact}</h4>
           {[
             { icon: '📍', text: t.footer.adresse },
-            { icon: '📞', text: '+237 683 428 378' },
-            { icon: '✉️', text: 'contact@abisbeautycorner.com' },
+            { icon: '📞', text: '+237 697 48 77 16' },
+            { icon: '📞', text: '+237 675 07 92 82' },
+            { icon: '✉️', text: 'abisbeautycorner2@gmail.com' },
             { icon: '🕐', text: t.footer.horaires },
           ].map((item) => (
             <p key={item.text} style={{ color: colors.textSub, fontSize: '0.85rem', marginBottom: '0.8rem', display: 'flex', gap: '0.5rem' }}>
